@@ -1,19 +1,32 @@
 const express = require("express");
+require("dotenv").config();
 const app = express();
+const { auth, requiresAuth } = require('express-openid-connect');
+
+const config = {
+    authRequired: false,
+    auth0Logout: true,
+    baseURL: 'http://localhost:3000',
+    clientID: 'zs3W1oaHCF5QIqyXaijcdROeifiQOTPW',
+    issuerBaseURL: 'https://dev-3xgjyfty.us.auth0.com',
+    secret: 'LONG_RANDOM_STRING'
+};
+
 
 const path = require("path");
+app.use(auth(config));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
-app.get("/login", (req, res) => {
-    res.sendFile(__dirname + "/public/login.html");
+app.get('/profile', requiresAuth(), (req, res) => {
+    res.send(JSON.stringify(req.oidc.user));
 });
 
-app.get("/success", (req, res) => {
-    res.sendFile(__dirname + "/public/success.html");
+app.get("/home", requiresAuth(), (req, res) => {
+    res.sendFile(__dirname + "/public/home.html");
 });
 
 app.listen("3000", console.log("Listening on port 3000."));

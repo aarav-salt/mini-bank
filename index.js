@@ -1,6 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const app = express();
+const router = require('./routes/index');
 const { auth, requiresAuth } = require('express-openid-connect');
 const PORT = process.env.PORT || 3000
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000"
@@ -17,17 +18,15 @@ const config = {
 const path = require("path");
 app.use(auth(config));
 app.use(express.static(path.join(__dirname, "public")));
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
+app.use(function (req, res, next) {
+    res.locals.user = req.oidc.user;
+    next();
 });
 
-app.get('/profile', requiresAuth(), (req, res) => {
-    res.send(JSON.stringify(req.oidc.user));
-});
+app.use('/', router);
 
-app.get("/home", requiresAuth(), (req, res) => {
-    res.sendFile(__dirname + "/public/home.html");
-});
 
 app.listen(PORT, console.log(`Listening on port ${PORT}.`));

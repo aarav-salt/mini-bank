@@ -1,6 +1,10 @@
 ## Features 
 - Authentication using Auth0.
 
+## Tech
+- [Auth0](https://auth0.com)
+- [express](https://expressjs.com)
+- [ejs](https://ejs.co)
 
 #### Local Deployment
 ```

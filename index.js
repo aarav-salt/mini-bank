@@ -2,7 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const app = express();
 const { auth, requiresAuth } = require('express-openid-connect');
-
+const PORT = process.env.PORT || 3000
 const config = {
     authRequired: false,
     auth0Logout: true,
@@ -29,4 +29,4 @@ app.get("/home", requiresAuth(), (req, res) => {
     res.sendFile(__dirname + "/public/home.html");
 });
 
-app.listen("3000", console.log("Listening on port 3000."));
+app.listen(PORT, console.log(`Listening on port ${PORT}.`));

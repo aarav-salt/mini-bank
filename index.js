@@ -39,8 +39,11 @@ const config = {
                 // create the user in the database
                 // check if the accountNumber is already in use
                 const accountNumber = Math.floor(Math.random() * Math.pow(10, 16));
+                while (accountNumber.toString().length != 16) {
+                    accountNumber = Math.floor(Math.random() * Math.pow(10, 16));
+                }
                 const userWithAccountNumber = await User.findOne({ accountNumber });
-                while (userWithAccountNumber) {
+                while (userWithAccountNumber || accountNumber.toString().length != 16) {
                     accountNumber = Math.floor(Math.random() * Math.pow(10, 16));
                     userWithAccountNumber = await User.findOne({ accountNumber });
                 }
